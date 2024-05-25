@@ -1,0 +1,4 @@
+LIBRARY Hook_IAT
+      DESCRIPTION 'Hook IAT Sample'
+      EXPORTS
+         m_strcmp

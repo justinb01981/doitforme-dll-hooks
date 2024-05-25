@@ -1,0 +1,28 @@
+->Import Table
+   1. ImageImportDescriptor:
+    OriginalFirstThunk:  0x0000207C
+    TimeDateStamp:       0x00000000  (GMT: Thu Jan 01 00:00:00 1970)
+    ForwarderChain:      0x00000000
+    Name:                0x000020DC  ("MSVCRT.dll")
+    FirstThunk:          0x00002000
+
+    Ordinal/Hint API name
+    ------------ ---------------------------------------
+    0x0083       "__setusermatherr"
+    0x026B       "gets"
+    0x029E       "printf"
+    0x00D3       "_exit"
+    0x0048       "_XcptFilter"
+    0x0249       "exit"
+    0x0064       "__p___initenv"
+    0x0058       "__getmainargs"
+    0x010F       "_initterm"
+    0x02B8       "strcmp"
+
+.text:0040105E strcmp          proc near               ; CODE XREF: _main+30p
+.text:0040105E                 jmp     ds:__imp_strcmp
+.text:0040105E strcmp          endp
+
+.idata:00402024 ; int __cdecl _imp_strcmp(const char *,const char *)
+.idata:00402024                 extrn __imp_strcmp:dword ; DATA XREF: strcmpr
+

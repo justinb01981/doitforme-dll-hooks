@@ -1,0 +1,81 @@
+-------------------------------------------------------------------
+
+Hey, I saw your article on Sandsprite on IAT Hooking, it's good but I  
+had a quick question about your example code.  How did you get the  
+address of strcmp in the IAT?  Your comment is "disasm and get  
+address" but I'm not sure what to disassemble.  Also, is there a more  
+dynamic way of finding this address at run time, as opposed to hard  
+coding the address in?
+
+Thanks,
+Zachary
+
+
+-------------------------------------------------------------------
+
+Hi Zachary,
+
+I got the IAT address in the sample by disassembling the 
+target exe file and seeing at what offset it was expecting
+the strcmp function pointer to reside at.
+
+You can find this dynamically at runtime by parsing the 
+files pe import table. I have some VB code on my site
+to do this in the open source section or I am sure there
+are some examples in your language of choice on the web.
+
+You can also get this address using a tool such as lordpe
+which is a pe file viewer where you would get a file listing
+such as 
+
+->Import Table
+   1. ImageImportDescriptor:
+    OriginalFirstThunk:  0x0000207C
+    TimeDateStamp:       0x00000000  (GMT: Thu Jan 01 00:00:00 1970)
+    ForwarderChain:      0x00000000
+    Name:                0x000020DC  ("MSVCRT.dll")
+    FirstThunk:          0x00002000
+
+    Ordinal/Hint API name
+    ------------ ---------------------------------------
+    0x0083       "__setusermatherr"
+    0x026B       "gets"
+    0x029E       "printf"
+    0x00D3       "_exit"
+    0x0048       "_XcptFilter"
+    0x0249       "exit"
+    0x0064       "__p___initenv"
+    0x0058       "__getmainargs"
+    0x010F       "_initterm"
+    0x02B8       "strcmp"
+
+
+With the information above we know that the applications import
+table starts at RVA 0x2000. The exes image base is 0x400000
+so the first function pointer held in the import table will be
+at memory virutal address 0x402000.
+
+Each pointer is a 4 byte number and strcmp is 9 entries
+past the start of the table. That means strcmp pointer will
+live at table base + 36 decimal (or 0x24 in hex)
+
+therefore final pointer address in table for strcmp is
+
+0x402024 which we then see in teh source as:
+
+int *thunk = (int*)0x402024 ; //disasm and get address 
+
+parsing pe from scratch is not a small job but good to 
+learn. This is why i used hardcoded offset in sample
+for primer.
+
+Good luck
+
+-Dave
+
+
+
+
+
+
+
